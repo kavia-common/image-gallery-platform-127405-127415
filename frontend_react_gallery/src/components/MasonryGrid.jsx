@@ -1,5 +1,8 @@
 import React from "react";
 
+// Path to the fallback image asset
+import fallbackImage from "../shared/fallback-image.svg";
+
 // Helper for dynamic column layout based on screen size
 const useColumns = () => {
   const [columns, setColumns] = React.useState(1);
@@ -50,6 +53,17 @@ const MasonryGrid = ({ images }) => {
                   className="w-full"
                   style={{ aspectRatio: `${img.width} / ${img.height}` }}
                   loading="lazy"
+                  // PUBLIC_INTERFACE
+                  /**
+                   * Image fallback handler: replaces with a local SVG fallback on error, preserving styles and aspect ratio.
+                   */
+                  onError={e => {
+                    // Prevent infinite loop in case fallback also fails
+                    if (e.target.src !== fallbackImage) {
+                      e.target.src = fallbackImage;
+                      e.target.alt = "Fallback image";
+                    }
+                  }}
                 />
                 <div className="p-2">
                   <div className="font-medium text-sm">{img.alt}</div>
